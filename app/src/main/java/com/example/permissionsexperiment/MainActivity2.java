@@ -10,23 +10,24 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 public final class MainActivity2 extends AppCompatActivity {
 
-    private final PermissionManager permissionManager = new PermissionManager(this, 0)
+    private final PermissionFlow permissionFlow = new PermissionFlow.Builder(this, 0)
             .setPermission(READ_EXTERNAL_STORAGE)
             .setAction(() -> StorageUtil.listDirStats(this))
             .setShowRationaleAction(() -> Toast.makeText(this, "This permission is needed", Toast.LENGTH_SHORT).show())
-            .setOnDeniedAction(() -> Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show());
+            .setOnDeniedAction(() -> Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show())
+            .build();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        findViewById(R.id.button).setOnClickListener(v -> permissionManager.invokeAction());
+        findViewById(R.id.button).setOnClickListener(v -> permissionFlow.start());
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        permissionManager.onRequestPermissionsResult(requestCode, grantResults);
+        permissionFlow.onRequestPermissionsResult(requestCode, grantResults);
     }
 }
